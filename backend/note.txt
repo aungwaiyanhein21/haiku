@@ -1,0 +1,3 @@
+Will be using PHP destructuring for both array and associative array.
+Need PHP 7.1.0 or above to work for associative array destructuring
+
