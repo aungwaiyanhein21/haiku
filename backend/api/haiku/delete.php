@@ -33,10 +33,23 @@
     $haiku->columns['id'] = $sanitized_data['id'];
   
     try {
-        if ($haiku -> delete()) {
-            echo json_encode(array(
-                'message' => 'Haiku has been deleted'
-            ));
+        // begin the transaction
+        $db->beginTransaction();
+
+        // get the image link from db
+        $haiku_image_path = $haiku->read_image_path();
+
+        // remove the image from the server
+        unlink('../'.$haiku_image_path);
+
+
+        $haiku -> delete();
+
+        //commit update
+        if ($db->commit()) {
+            echo json_encode(
+                array('message' => 'Haiku has been deleted', 'isSuccess' => true)
+            );
         }
     }
     catch (PDOException $e) {

@@ -3,7 +3,7 @@ import BasicTable from './BasicTable';
 
 import { Container, Typography } from '@material-ui/core';
 
-import { Redirect } from 'react-router-dom';
+import { Redirect, useHistory } from 'react-router-dom';
 
 import axios from 'axios';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -11,8 +11,12 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Button from '@material-ui/core/Button';
 import CreateIcon from '@material-ui/icons/Create';
 
+import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
+import IconButton from '@material-ui/core/IconButton';
 
 const Authors = () => {
+    const history = useHistory();
+
     const [authorData, setAuthorData] = useState(null);
 
     const [hasClickedCreate, setHasClickedCreate] = useState(false);
@@ -55,10 +59,16 @@ const Authors = () => {
             }
    
             <Container maxWidth="lg">
-            
+
+                <IconButton 
+                    color="primary"
+                    onClick={() => history.push('/')}
+                >
+                    <KeyboardBackspaceIcon fontSize="large"/>
+                </IconButton>
 
                 <Typography variant="h4" align="center" color="textPrimary">
-                    Author
+                    Authors
                 </Typography>
 
 

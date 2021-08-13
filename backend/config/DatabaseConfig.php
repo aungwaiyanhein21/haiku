@@ -1,5 +1,8 @@
 <?php
-    define('DB_PATH', $_SERVER['DOCUMENT_ROOT'].'/haiku_backend/haiku.db');
+    // include_once '../root_directory.php';
+
+
+    define('DB_PATH', $_SERVER['DOCUMENT_ROOT'].'/haiku/backend/haiku.db');
     class Database {
         private $conn;
 
@@ -9,6 +12,7 @@
 
             try {
                 $this->conn = new PDO('sqlite:'.DB_PATH);
+               
                 $this->conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
                 
                 $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

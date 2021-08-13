@@ -9,10 +9,13 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import TableSortLabel from '@material-ui/core/TableSortLabel';
 
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { IconButton } from '@material-ui/core';
+
+import useSortedData from '../../hooks/useSortedDataHook';
 
 
 
@@ -24,6 +27,18 @@ const useStyles = makeStyles({
 
 export default function BasicTable({data, handleDelete}) {
   const classes = useStyles();
+
+  // for sorting
+  const { items, requestSort, sortConfig } = useSortedData(data);
+
+  const getDirection = (name) => {
+    
+    if (!sortConfig) {
+      return;
+    }
+    
+    return sortConfig.key === name ? sortConfig.direction : undefined;
+  };
 
   const [updateObj, setHasUpdateObj] = useState({
     isUpdate: false,
@@ -57,33 +72,43 @@ export default function BasicTable({data, handleDelete}) {
         <Table stickyHeader className={classes.table} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell align="right">No:</TableCell>
-              <TableCell align="right">Literary Name</TableCell>
-              <TableCell align="right">First Name</TableCell>
-              <TableCell align="right">Last Name</TableCell>
-              <TableCell align="right">Country</TableCell>
-              <TableCell align="right">Language</TableCell>
-              <TableCell align="right">Year Born</TableCell>
-              <TableCell align="right">Year Died</TableCell>
-              <TableCell align="right"></TableCell>
+              <TableCell align="center">No:</TableCell>
+              <TableCell 
+                align="center" 
+              >
+                <TableSortLabel
+                  active={getDirection('literary_name') !== undefined}
+                  direction = {getDirection('literary_name')}
+                  onClick={() => requestSort('literary_name')}
+                >
+                  Literary Name
+                </TableSortLabel>
+              </TableCell>
+              <TableCell align="center">First Name</TableCell>
+              <TableCell align="center">Last Name</TableCell>
+              <TableCell align="center">Country</TableCell>
+              <TableCell align="center">Language</TableCell>
+              <TableCell align="center">Year Born</TableCell>
+              <TableCell align="center">Year Died</TableCell>
+              <TableCell align="center"></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((row, index) => (
+            {items.map((row, index) => (
               <TableRow key={row.id}>
-                  <TableCell align="right">{index + 1}</TableCell>
-                  <TableCell align="right">{row.literary_name}</TableCell>
-                  <TableCell align="right">{row.first_name}</TableCell>
-                  <TableCell align="right">{row.last_name}</TableCell>
-                  <TableCell align="right">{row.country}</TableCell>
-                  <TableCell align="right">{row.language}</TableCell>
-                  <TableCell align="right">{row.year_born}</TableCell>
-                  <TableCell align="right">{row.year_died}</TableCell>
-                  <TableCell align="right">
-                      <IconButton aria-label="edit" onClick={() => handleUpdate(row)}>
+                  <TableCell align="center">{index + 1}</TableCell>
+                  <TableCell align="center">{row.literary_name}</TableCell>
+                  <TableCell align="center">{row.first_name}</TableCell>
+                  <TableCell align="center">{row.last_name}</TableCell>
+                  <TableCell align="center">{row.country}</TableCell>
+                  <TableCell align="center">{row.language}</TableCell>
+                  <TableCell align="center">{row.year_born}</TableCell>
+                  <TableCell align="center">{row.year_died}</TableCell>
+                  <TableCell align="center">
+                      <IconButton color="primary" aria-label="edit" onClick={() => handleUpdate(row)}>
                           <EditIcon />
                       </IconButton>
-                      <IconButton aria-label="delete" onClick={() => handleDelete(row.id)}>
+                      <IconButton color="secondary" aria-label="delete" onClick={() => handleDelete(row.id)}>
                           <DeleteIcon />
                       </IconButton>
                   </TableCell>
@@ -91,11 +116,11 @@ export default function BasicTable({data, handleDelete}) {
                 {/* <TableCell component="th" scope="row">
                   {row.name}
                 </TableCell>
-                <TableCell align="right">{row.calories}</TableCell>
-                <TableCell align="right">{row.fat}</TableCell>
-                <TableCell align="right">{row.carbs}</TableCell>
-                <TableCell align="right">{row.protein}</TableCell>
-                <TableCell align="right"><EditIcon /><DeleteIcon /></TableCell> */}
+                <TableCell align="center">{row.calories}</TableCell>
+                <TableCell align="center">{row.fat}</TableCell>
+                <TableCell align="center">{row.carbs}</TableCell>
+                <TableCell align="center">{row.protein}</TableCell>
+                <TableCell align="center"><EditIcon /><DeleteIcon /></TableCell> */}
 
                 
               </TableRow>

@@ -1,7 +1,7 @@
 <?php
     // Headers
     header('Access-Control-Allow-Origin: *');
-    header('Content-Type: application/json');
+    header('Content-Type: multipart/form-data');
     header('Access-Control-Allow-Methods: POST');
     header('Access-Control-Allow-Headers: Access-Control-Allow-Headers,Content-Type,Access-Control-Allow-Methods');
 
@@ -12,11 +12,12 @@
 
     include_once '../../models/Haiku.php';
     include_once '../../models/Writes.php';
-    include_once '../../models/TakenFrom.php';
+    // include_once '../../models/TakenFrom.php';
     include_once '../../models/Belongs.php';
     include_once '../../models/HaikuConcepts.php';
 
     include_once '../../utilities/sanitize_inputs.php';
+    include_once '../../utilities/image.php';
 
     // Instantiate DB & connect
     $database = new Database();
@@ -28,7 +29,7 @@
     // Instantiate  object
     $haiku = new Haiku($db);
     $writes = new Writes($db);
-    $takenFrom = new TakenFrom($db);
+    // $takenFrom = new TakenFrom($db);
 
     // 2 categories
     $belongs_1 = new Belongs($db);
@@ -38,8 +39,11 @@
     $haikuConcept = new HaikuConcepts($db);
 
 
-    // Get raw posted data
-    $data = (array) json_decode(file_get_contents("php://input"));
+    // // Get raw posted data
+    // $data = (array) json_decode(file_get_contents("php://input"));
+
+    $data = $_POST;
+    
 
     // sanitize raw data
     $sanitized_data = sanitize_inputs($data);
@@ -53,12 +57,13 @@
     $haiku->columns['comments'] = $sanitized_data['comments'];
     $haiku->columns['language_id'] = $sanitized_data['language_id'];
     $haiku->columns['english_translation'] = $sanitized_data['english_translation'];
+    $haiku->columns['reference'] = $sanitized_data['reference'];
 
     // writes
     $writes->columns['author_id'] = $sanitized_data['author_id'];
 
-    // taken from
-    $takenFrom->columns['ref_id'] = $sanitized_data['ref_id'];
+    // // taken from
+    // $takenFrom->columns['ref_id'] = $sanitized_data['ref_id'];
 
     // belongs
     $belongs_1->columns['category_id'] = $sanitized_data['category_1'];
@@ -69,19 +74,52 @@
     $haikuConcept->columns['concept_id_2'] = $sanitized_data['concept_2'];
     $haikuConcept->columns['passage_1'] = $sanitized_data['passage_1'];
     $haikuConcept->columns['passage_2'] = $sanitized_data['passage_2'];
+    $haikuConcept->columns['passage_1_start_index'] = $sanitized_data['passage_1_start_index'];
+    $haikuConcept->columns['passage_1_end_index'] = $sanitized_data['passage_1_end_index'];
+    $haikuConcept->columns['passage_2_start_index'] = $sanitized_data['passage_2_start_index'];
+    $haikuConcept->columns['passage_2_end_index'] = $sanitized_data['passage_2_end_index'];
 
+  
     try {
         // begin the transaction
         $db->beginTransaction();
 
+        if ($sanitized_data['image_path'] != "" && $_FILES['image']['size'] == 0) {
+            // we are trying to save as new connection 
+            // and we haven't updated the image so we need to copy and rename the file
+
+            $uploaded_img_info = copy_image($sanitized_data['image_path']);
+        }
+        else if ($_FILES['image']['size'] != 0){
+            // user has uploaded the image
+            // so save the image on the server
+            $uploaded_img_info = upload_image($_FILES['image']);
+        }
+
+        if ($_FILES['image']['size'] == 0 && $sanitized_data['image_path'] == "") {
+            // no image has been uploaded or updated so leave the image path as blank
+            // on the client side, default image will be shown
+            $haiku->columns['image_path'] = "";
+        }
+        else {
+            if ($uploaded_img_info['is_upload_success']) {
+                // update image path in haiku
+    
+                $haiku->columns['image_path'] = $uploaded_img_info['image_path'];
+            }
+            else {
+                throw new Exception($uploaded_img_info["error_message"]);
+            }
+        }
+    
         // insert into Haiku
         $haiku_id = $haiku->create();
 
         // insert into writes that connects author with haiku
         $writes->create($haiku_id);
 
-        // insert into 'taken from' that connects haiku with reference 
-        $takenFrom->create($haiku_id);
+        // // insert into 'taken from' that connects haiku with reference 
+        // $takenFrom->create($haiku_id);
 
         // insert into belongs that connects haiku with category 
         $belongs_1->create($haiku_id);
@@ -101,8 +139,15 @@
     catch (PDOException $e) {
         $db->rollBack();
 
+        // also remove the uploaded image
+
         echo json_encode(
             array('message' => 'Haiku not created', 'errorMessage' => $e, 'isSuccess' => false)
+        );
+    }
+    catch (Exception $e) {
+        echo json_encode(
+            array('message' => 'Haiku not created because of upload image error', 'errorMessage' => $e->getMessage(), 'isSuccess' => false)
         );
     }
 

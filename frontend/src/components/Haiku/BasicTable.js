@@ -9,12 +9,17 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import TableSortLabel from '@material-ui/core/TableSortLabel';
 
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { IconButton } from '@material-ui/core';
 
+import addDefaultSrc from '../../utilities/defaultImageSrc';
+
 import HaikuInfoModal from '../Modal/HaikuInfoModal';
+import DeleteConfirmationModal from '../Modal/DeleteConfirmationModal';
+import useSortedData from '../../hooks/useSortedDataHook';
 
 
 
@@ -29,17 +34,44 @@ const useStyles = makeStyles({
     textDecoration: "underline",
     color: "blue",
     cursor: "pointer"
+  },
+  img: {
+    width: "80px"
   }
 });
 
 export default function BasicTable({data, handleDelete}) {
+  console.log('in basic table');
+  console.log(data);
+
   const classes = useStyles();
 
+  // for sorting
+  const { items, requestSort, sortConfig } = useSortedData(data);
+
+  const getDirection = (name) => {
+    
+    if (!sortConfig) {
+      return;
+    }
+    
+    return sortConfig.key === name ? sortConfig.direction : undefined;
+  };
+
+  // modal containing more info about haiku
   const [openHaikuInfoModal, setOpenHaikuInfoModal] = useState(false);
   
   const handleHaikuInfoModalOpen = () => setOpenHaikuInfoModal(true);
 
   const handleHaikuInfoModalClose = () => setOpenHaikuInfoModal(false);
+
+  // for delete confirmation modal
+  const [openDeleteConfirmationModal, setOpenDeleteConfirmationModal] = useState(false);
+  
+  const handleDeleteConfirmationModalOpen = () => setOpenDeleteConfirmationModal(true);
+
+  const handleDeleteConfirmationModalClose = () => setOpenDeleteConfirmationModal(false);
+
 
   const [haikuInfoObj, setHaikuInfoObj] = useState({});
   const handleHaikuInfo = (obj) => {
@@ -52,6 +84,8 @@ export default function BasicTable({data, handleDelete}) {
     obj: {}
   });
 
+  const [deleteId, setDeleteId] = useState(-1);
+
   const handleUpdate = (obj) => {
     setHasUpdateObj({
       isUpdate: true,
@@ -59,12 +93,19 @@ export default function BasicTable({data, handleDelete}) {
     });
   };
 
+  const updateDeleteId = (id) => {
+    setDeleteId(id);
+    handleDeleteConfirmationModalOpen();
+  };
+
+  
   return (
     <>
       {
         updateObj.isUpdate && 
         (
           <Redirect 
+            push
             to={{
               pathname: "/haiku/update",
               search: `?id=${updateObj.obj.id}`
@@ -87,14 +128,66 @@ export default function BasicTable({data, handleDelete}) {
           )
       }
 
+      {
+          openDeleteConfirmationModal && (
+              <DeleteConfirmationModal 
+                  open={openDeleteConfirmationModal} 
+                  setOpen={setOpenDeleteConfirmationModal} 
+                  handleClose={handleDeleteConfirmationModalClose} 
+                  handleDelete={handleDelete}
+                  deleteId={deleteId}
+              />
+          )
+      }
+
       <TableContainer className={classes.tableContainer} component={Paper}>
         <Table stickyHeader className={classes.table} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell align="center">No:</TableCell>
-              <TableCell align="center">Author</TableCell>
-              <TableCell align="center">Haiku Title</TableCell>
-              <TableCell align="center">Published Year</TableCell>
+              <TableCell 
+                align="center">
+                No:
+              </TableCell>
+              <TableCell 
+                align="center">
+                Image
+              </TableCell>
+              <TableCell 
+                align="center" 
+                
+              >
+                <TableSortLabel
+                  active={getDirection('author') !== undefined}
+                  direction = {getDirection('author')}
+                  onClick={() => requestSort('author')}
+                >
+                  Author
+                </TableSortLabel>
+                
+              </TableCell>
+              <TableCell 
+                align="center" 
+              >
+                <TableSortLabel
+                  active={getDirection('title') !== undefined}
+                  direction = {getDirection('title')}
+                  onClick={() => requestSort('title')}
+                >
+                  Haiku Title
+                </TableSortLabel>
+                
+              </TableCell>
+              <TableCell 
+                align="center" 
+              >
+                <TableSortLabel
+                  active={getDirection('published_year') !== undefined}
+                  direction = {getDirection('published_year')}
+                  onClick={() => requestSort('published_year')}
+                >
+                  Published Year
+                </TableSortLabel>
+              </TableCell>
               {/* <TableCell align="center">Haiku Text</TableCell>
               <TableCell align="center">Reference</TableCell>
               <TableCell align="center">Emotion</TableCell>
@@ -103,17 +196,47 @@ export default function BasicTable({data, handleDelete}) {
               <TableCell align="center">English Translation</TableCell>
               <TableCell align="center">Passage 1</TableCell>
               <TableCell align="center">Passage 2</TableCell> */}
-              <TableCell align="center">Category 1</TableCell>
-              <TableCell align="center">Category 2</TableCell>
+              <TableCell 
+                align="center" 
+              >
+                <TableSortLabel
+                  active={getDirection('category_1') !== undefined}
+                  direction = {getDirection('category_1')}
+                  onClick={() => requestSort('category_1')}
+                >
+                  Category 1
+                </TableSortLabel>
+                
+              </TableCell>
+              <TableCell 
+                align="center" 
+              >
+                <TableSortLabel
+                  active={getDirection('category_2') !== undefined}
+                  direction = {getDirection('category_2')}
+                  onClick={() => requestSort('category_2')}
+                >
+                  Category 2
+                </TableSortLabel>
+                
+              </TableCell>
               {/* <TableCell align="center">Concept 1</TableCell>
               <TableCell align="center">Concept 2</TableCell> */}
               <TableCell align="center"></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((row) => (
+            {items.map((row, indx) => (
               <TableRow key={row.id}>
-                  <TableCell align="center">{row.id}</TableCell>
+                  <TableCell align="center">{indx + 1}</TableCell>
+                  <TableCell align="center">
+                    <img
+                      className={classes.img} 
+                      src={process.env.REACT_APP_SERVER_URL + row.image_path} 
+                      alt={process.env.REACT_APP_SERVER_URL + row.image_path}
+                      onError={addDefaultSrc}
+                    />
+                  </TableCell>
                   <TableCell align="center">{row.author}</TableCell>
                   <TableCell align="center"><a className={classes.haikuTitle} onClick={() => handleHaikuInfo(row)}>{row.title}</a></TableCell>
                   <TableCell align="center">{row.published_year}</TableCell>
@@ -143,7 +266,7 @@ export default function BasicTable({data, handleDelete}) {
                       <IconButton color="primary" aria-label="edit" onClick={() => handleUpdate(row)}>
                           <EditIcon />
                       </IconButton>
-                      <IconButton color="secondary" aria-label="delete" onClick={() => handleDelete(row.id)}>
+                      <IconButton color="secondary" aria-label="delete" onClick={() => updateDeleteId(row.id)}>
                           <DeleteIcon />
                       </IconButton>
                   </TableCell>
