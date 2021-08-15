@@ -15,17 +15,32 @@
         Clone the repository in htdocs (if using XAMPP)
     </li>
     <li>
-        inside backend folder, run two sql files:<br>
-        ".read sql_files/Create.sql"<br>
-        ".read sql_files/Insert.sql"<br>
-        to create db file and insert default data into it.
+        Make sure XAMPP is running and sqlite3 is available
+    </li>
+    <li>
+    Create db in backend (name: haiku.db)<br>
+	Command Line Commands:
+        <ul>
+            <li>cd backend</li>
+            <li>sqlite3</li>
+            <li>.open haiku.db</li>
+            <li>.read sql_files/Create.sql</li>
+            <li>.read sql_files/Insert.sql</li>
+            <li>.tables (to check if the database has been created successfully)</li> 
+        </ul>
+    </li>
+    <li>
+        Make sure there is read & write privilege for the whole folder and files inside it (especially haiku.db)
+    </li>
+    <li>
+        cd frontend
     </li>
     <li>
         Create .env file inside frontend folder
     </li>
     <li>
         put 
-        "REACT_APP_SERVER_URL=http://localhost/haiku/backend/api" 
+        "REACT_APP_SERVER_URL=http://localhost/haiku/backend/api" (without quotation) 
         in .env file
     </li>
     <li>
@@ -35,12 +50,6 @@
         "npm start" (for development server for React)
     </li>
 </ol>
-
-<hr>
-
-## Functionality
-
-
 
 
 <hr>
