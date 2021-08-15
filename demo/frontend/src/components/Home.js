@@ -32,7 +32,12 @@ const Home = () => {
                     Welcome to Haiku Collection
                 </Typography>
 
+
                 <Container className={classes.container} maxWidth="sm">
+                    <Typography variant="body1" align="center" color="textPrimary">
+                        If you want to contribute in adding more haiku, please email <a href="mailto:mgbarsky@gmail.com">mgbarsky@gmail.com</a>.
+                    </Typography>
+                
                     <Button
                         variant="contained"
                         color="primary"
