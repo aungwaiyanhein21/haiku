@@ -90,7 +90,6 @@ export default function BasicTable({data, handleDelete}) {
               <TableCell align="center">Language</TableCell>
               <TableCell align="center">Year Born</TableCell>
               <TableCell align="center">Year Died</TableCell>
-              {/* <TableCell align="center"></TableCell> */}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -105,15 +104,6 @@ export default function BasicTable({data, handleDelete}) {
                   <TableCell align="center">{row.year_born}</TableCell>
                   <TableCell align="center">{row.year_died}</TableCell>
                   
-                  {/* <TableCell align="center">
-                      <IconButton color="primary" aria-label="edit" onClick={() => handleUpdate(row)}>
-                          <EditIcon />
-                      </IconButton>
-                      <IconButton color="secondary" aria-label="delete" onClick={() => handleDelete(row.id)}>
-                          <DeleteIcon />
-                      </IconButton>
-                  </TableCell>
-                 */}
                 {/* <TableCell component="th" scope="row">
                   {row.name}
                 </TableCell>

@@ -33,7 +33,6 @@
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($result) {
-            $categories_arr = explode(",",$result['categories']);
 
             $haiku_response_data = array();
 
@@ -56,8 +55,8 @@
                 'passage_2_indexes' => array((int)$result['passage_2_start_index'], (int)$result['passage_2_end_index']),
                 'concept_1' => (int)$result['concept_1'],
                 'concept_2' => (int)$result['concept_2'],
-                'category_1' => (int)$categories_arr[0],
-                'category_2' => (int)$categories_arr[1]
+                'category_1' => (int)$result['category_1'],
+                'category_2' => (int)$result['category_2']
             );
 
             $haiku_response_data['responseData'] = $haiku_assoc_arr;
@@ -92,7 +91,6 @@
 
     while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
 
-        $categories_arr = explode(",",$row['categories']);
         $haiku_assoc_arr = array(
             'author' => $row['literary_name'],
             'id' => (int)$row['id'],
@@ -111,8 +109,8 @@
             'passage_2_indexes' => array((int)$row['passage_2_start_index'], (int)$row['passage_2_end_index']),
             'concept_1' => $row['concept_1'],
             'concept_2' => $row['concept_2'],
-            'category_1' => $categories_arr[0],
-            'category_2' => $categories_arr[1]
+            'category_1' => $row['category_1'],
+            'category_2' => $row['category_2']
         );
 
         // push to 'data'

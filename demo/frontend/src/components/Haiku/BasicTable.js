@@ -222,13 +222,12 @@ export default function BasicTable({data, handleDelete}) {
               </TableCell>
               {/* <TableCell align="center">Concept 1</TableCell>
               <TableCell align="center">Concept 2</TableCell> */}
-              {/* <TableCell align="center"></TableCell> */}
             </TableRow>
           </TableHead>
           <TableBody>
-            {items.map((row) => (
+            {items.map((row, indx) => (
               <TableRow key={row.id}>
-                  <TableCell align="center">{row.id}</TableCell>
+                  <TableCell align="center">{indx + 1}</TableCell>
                   <TableCell align="center">
                     <img
                       className={classes.img} 
@@ -262,15 +261,7 @@ export default function BasicTable({data, handleDelete}) {
                   <TableCell align="center">{row.category_2}</TableCell>
                   {/* <TableCell align="center">{row.concept_1}</TableCell>
                   <TableCell align="center">{row.concept_2}</TableCell> */}
-                  
-                  {/* <TableCell align="center">
-                      <IconButton color="primary" aria-label="edit" onClick={() => handleUpdate(row)}>
-                          <EditIcon />
-                      </IconButton>
-                      <IconButton color="secondary" aria-label="delete" onClick={() => updateDeleteId(row.id)}>
-                          <DeleteIcon />
-                      </IconButton>
-                  </TableCell> */}
+                 
                 
                 {/* <TableCell component="th" scope="row">
                   {row.name}

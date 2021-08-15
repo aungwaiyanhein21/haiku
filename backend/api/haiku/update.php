@@ -32,8 +32,7 @@
     // $takenFrom = new TakenFrom($db);
 
     // 2 categories
-    $belongs_1 = new Belongs($db);
-    $belongs_2 = new Belongs($db);
+    $belongs = new Belongs($db);
 
     // 2 concepts and 2 passages but in one table
     $haikuConcept = new HaikuConcepts($db);
@@ -64,7 +63,7 @@
     $sanitized_data = sanitize_inputs($data);
 
     // set ID to update
-    $haiku->columns['id'] = $sanitized_data['id'];
+    $haiku->columns['id'] = (int)$sanitized_data['id'];
    
     // assign data
     // haiku
@@ -73,30 +72,30 @@
     $haiku->columns['haiku_text'] = $sanitized_data['haiku_text'];
     $haiku->columns['emotion'] = $sanitized_data['emotion'];
     $haiku->columns['comments'] = $sanitized_data['comments'];
-    $haiku->columns['language_id'] = $sanitized_data['language_id'];
+    $haiku->columns['language_id'] = (int)$sanitized_data['language_id'];
     $haiku->columns['english_translation'] = $sanitized_data['english_translation'];
     $haiku->columns['reference'] = $sanitized_data['reference'];
     $haiku->columns['image_path'] = $sanitized_data['image_path'];
 
     // writes
-    $writes->columns['author_id'] = $sanitized_data['author_id'];
+    $writes->columns['author_id'] = (int)$sanitized_data['author_id'];
 
     // // taken from
     // $takenFrom->columns['ref_id'] = $sanitized_data['ref_id'];
 
     // belongs
-    $belongs_1->columns['category_id'] = $sanitized_data['category_1'];
-    $belongs_2->columns['category_id'] = $sanitized_data['category_2'];
+    $belongs->columns['category_id_1'] = (int)$sanitized_data['category_1'];
+    $belongs->columns['category_id_2'] = (int)$sanitized_data['category_2'];
 
     // haiku concept
-    $haikuConcept->columns['concept_id_1'] = $sanitized_data['concept_1'];
-    $haikuConcept->columns['concept_id_2'] = $sanitized_data['concept_2'];
+    $haikuConcept->columns['concept_id_1'] = (int)$sanitized_data['concept_1'];
+    $haikuConcept->columns['concept_id_2'] = (int)$sanitized_data['concept_2'];
     $haikuConcept->columns['passage_1'] = $sanitized_data['passage_1'];
     $haikuConcept->columns['passage_2'] = $sanitized_data['passage_2'];
-    $haikuConcept->columns['passage_1_start_index'] = $sanitized_data['passage_1_start_index'];
-    $haikuConcept->columns['passage_1_end_index'] = $sanitized_data['passage_1_end_index'];
-    $haikuConcept->columns['passage_2_start_index'] = $sanitized_data['passage_2_start_index'];
-    $haikuConcept->columns['passage_2_end_index'] = $sanitized_data['passage_2_end_index'];
+    $haikuConcept->columns['passage_1_start_index'] = (int)$sanitized_data['passage_1_start_index'];
+    $haikuConcept->columns['passage_1_end_index'] = (int)$sanitized_data['passage_1_end_index'];
+    $haikuConcept->columns['passage_2_start_index'] = (int)$sanitized_data['passage_2_start_index'];
+    $haikuConcept->columns['passage_2_end_index'] = (int)$sanitized_data['passage_2_end_index'];
 
     try {
         // begin the transaction
@@ -141,14 +140,10 @@
         // // update 'taken from' that connects haiku with reference 
         // $takenFrom->update($haiku_id);
 
-        // update belongs that connects haiku with category 
-            // first delete rows that have haiku id equal to current haiku id
-            // then create rows
+        // update belongs(that connect Haiku and Category)
 
         Belongs::delete($haiku_id, $db);
-
-        $belongs_1->create($haiku_id);
-        $belongs_2->create($haiku_id);
+        $belongs->create($haiku_id);
 
         // update haiku concepts that connects haiku with concepts 
         $haikuConcept->update($haiku_id);

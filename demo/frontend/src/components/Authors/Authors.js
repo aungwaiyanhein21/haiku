@@ -14,7 +14,6 @@ import CreateIcon from '@material-ui/icons/Create';
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 import IconButton from '@material-ui/core/IconButton';
 
-
 const Authors = () => {
     const history = useHistory();
 
@@ -55,31 +54,19 @@ const Authors = () => {
 
     return (
         <>
-            {/* {
-                hasClickedCreate && <Redirect to="/authors/create" />
-            } */}
    
             <Container maxWidth="lg">
-            
+
                 <IconButton 
                     color="primary"
                     onClick={() => history.push('/')}
                 >
                     <KeyboardBackspaceIcon fontSize="large"/>
                 </IconButton>
+
                 <Typography variant="h4" align="center" color="textPrimary">
                     Authors
                 </Typography>
-
-
-                {/* <Button
-                    variant="contained"
-                    color="primary"
-                    startIcon={<CreateIcon />}
-                    onClick={() => setHasClickedCreate(true)}
-                >
-                    Create
-                </Button> */}
 
                 {
                     !authorData && <div><CircularProgress /></div>

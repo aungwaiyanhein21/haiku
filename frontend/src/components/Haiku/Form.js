@@ -118,6 +118,18 @@ const Form = (props) => {
 
     };
 
+    const reloadConceptSelectBox = () => {
+        // update connection between concept and category
+        const conceptShown1 = new Set(conceptCategoriesData[haikuData.category1]);
+        const conceptShown2 = new Set(conceptCategoriesData[haikuData.category2]);
+        setconceptToBeShown1(conceptShown1);
+        setconceptToBeShown2(conceptShown2);
+
+        console.log('in reloading');
+        console.log(conceptShown1);
+        console.log(conceptShown2);
+    };
+
     const [openCategoryModal, setOpenCategoryModal] = useState(false);
     const [openConceptModal, setOpenConceptModal] = useState(false);
    
@@ -159,8 +171,6 @@ const Form = (props) => {
             end = selectionEnd;
         }
 
-        console.log('here in getSelectionInfo');
-
         return {start, end, text};
     };
 
@@ -174,14 +184,8 @@ const Form = (props) => {
         // there is no selection. Just placing a cursor.
         if (start === end) {
             resetSelectTextAndDisableBtn();
-            console.log('here');
-            return;
+            return {start, end};
         };
-       
-        console.log(start);
-        console.log(end);
-        console.log(text);
-        console.log(text.length);
 
        
         let textSelected = window.getSelection().toString();
@@ -202,11 +206,21 @@ const Form = (props) => {
     const handlePassageClick = (name, passageIndexName) => {
 
         console.log(haikuData);
+        // if (haikuData[name] === '') {
+        //     alert("haven't selected respective passages before clicking on the button");
+        //     return;
+        // }
 
         // console.log(window.getSelection().toString());
 
         // set indexes
         const {start, end} = onChangeSelectText();
+          
+        // there is no selection. Just placing a cursor.
+        if (start === end) {
+            alert('need to select text before clicking on button');
+            return;
+        };
 
         console.log('\nafter button clicked');
         console.log(start);
@@ -232,15 +246,17 @@ const Form = (props) => {
 
 
     useEffect(() => {
+        reloadConceptSelectBox();
         if (isFormToBeUpdate) {
-            
             // update connection between concept and category
-            const conceptShown1 = new Set(conceptCategoriesData[haikuData.category1]);
-            const conceptShown2 = new Set(conceptCategoriesData[haikuData.category2]);
-            setconceptToBeShown1(conceptShown1);
-            setconceptToBeShown2(conceptShown2);
+           
+            
+            // const conceptShown1 = new Set(conceptCategoriesData[haikuData.category1]);
+            // const conceptShown2 = new Set(conceptCategoriesData[haikuData.category2]);
+            // setconceptToBeShown1(conceptShown1);
+            // setconceptToBeShown2(conceptShown2);
         }
-    }, []);
+    }, [conceptCategoriesData]);
 
     return (
         <>

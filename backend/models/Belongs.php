@@ -7,7 +7,8 @@
         // Columns in a table
         public $columns = array(
             'haiku_id' => -1,
-            'category_id' => -1
+            'category_id_1' => -1,
+            'category_id_2' => -1
         );
 
         // constructor with DB
@@ -21,16 +22,40 @@
 
             // sql query
             $query = "INSERT INTO $this->table 
-                (haiku_id, category_id) 
+                (haiku_id, category_id_1, category_id_2) 
                 VALUES 
-                (:haiku_id, :category_id);";
+                (:haiku_id, :category_id_1, :category_id_2);";
 
             // prepare statement
             $stmt = $this->conn->prepare($query);
 
             // bind data
             $stmt->bindValue(':haiku_id', $this->columns['haiku_id']);
-            $stmt->bindValue(':category_id', $this->columns['category_id']);
+            $stmt->bindValue(':category_id_1', $this->columns['category_id_1']);
+            $stmt->bindValue(':category_id_2', $this->columns['category_id_2']);
+
+            // Execute query
+            $stmt->execute();
+        }
+
+        // update
+        public function update($haiku_id) {
+            $this->columns['haiku_id'] = $haiku_id;
+
+            // query
+            $query = "UPDATE $this->table 
+            SET  
+                category_id_1 = :category_id_1,
+                category_id_2 = :category_id_2
+            WHERE 
+                haiku_id = :haiku_id";
+
+            // prepare statement
+            $stmt = $this->conn->prepare($query);
+
+            // bind data
+            $stmt->bindValue(':category_id_1', $this->columns['category_id_1']);
+            $stmt->bindValue(':category_id_2', $this->columns['category_id_2']);
 
             // Execute query
             $stmt->execute();

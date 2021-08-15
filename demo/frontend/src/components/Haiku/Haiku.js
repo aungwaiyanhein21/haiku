@@ -55,31 +55,17 @@ const Haiku = () => {
 
     return (
         <>
-            {/* {
-                hasClickedCreate && <Redirect push to="/haiku/create" />
-            } */}
-   
             <Container maxWidth="lg">
-            
                 <IconButton 
                     color="primary"
                     onClick={() => history.push('/')}
                 >
                     <KeyboardBackspaceIcon fontSize="large"/>
                 </IconButton>
+
                 <Typography variant="h4" align="center" color="textPrimary">
                     Haiku
                 </Typography>
-
-{/* 
-                <Button
-                    variant="contained"
-                    color="primary"
-                    startIcon={<CreateIcon />}
-                    onClick={() => setHasClickedCreate(true)}
-                >
-                    Create
-                </Button> */}
 
                 {
                     !haikuData && <div><CircularProgress /></div>

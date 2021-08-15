@@ -121,11 +121,13 @@ CREATE TABLE concept_category (
 
 CREATE TABLE belongs (
     haiku_id INTEGER,
-    category_id INTEGER,
-    PRIMARY KEY ( haiku_id, category_id)
+    category_id_1 INTEGER,
+    category_id_2 INTEGER,
+    PRIMARY KEY ( haiku_id, category_id_1, category_id_2),
 
     FOREIGN KEY(haiku_id) REFERENCES Haiku(id) ON DELETE CASCADE,
-    FOREIGN KEY(category_id) REFERENCES Category(id) ON DELETE CASCADE
+    FOREIGN KEY(category_id_1) REFERENCES Category(id) ON DELETE CASCADE,
+    FOREIGN KEY(category_id_2) REFERENCES Category(id) ON DELETE CASCADE
 );
 
 CREATE TABLE haiku_concepts (
@@ -162,13 +164,11 @@ SELECT
     h_c.passage_1, h_c.passage_2, h_c.passage_1_start_index, h_c.passage_1_end_index, h_c.passage_2_start_index, h_c.passage_2_end_index,
     c1.concept_name as concept_1,
     c2.concept_name as concept_2,
-    GROUP_CONCAT(cat.category_name) as categories
+    cat1.category_name as category_1,
+    cat2.category_name as category_2
 FROM Haiku h 
     INNER JOIN writes w ON w.haiku_id = h.id
     INNER JOIN Author auth ON auth.id = w.author_id
-
-    -- INNER JOIN taken_from t_f ON t_f.haiku_id = h.id
-    -- INNER JOIN Reference ref ON ref.id = t_f.ref_id
 
     INNER JOIN Languages lang ON lang.id = h.language_id
 
@@ -177,6 +177,7 @@ FROM Haiku h
     INNER JOIN Concept c2 ON c2.id = h_c.concept_id_2
 
     INNER JOIN belongs b ON b.haiku_id = h.id
-    INNER JOIN Category cat ON cat.id = b.category_id
+    INNER JOIN Category cat1 ON cat1.id = b.category_id_1
+    INNER JOIN Category cat2 ON cat2.id = b.category_id_2
 
     GROUP BY h.id

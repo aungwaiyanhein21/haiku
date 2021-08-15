@@ -49,14 +49,15 @@
                         h_c.passage_1, h_c.passage_2, h_c.passage_1_start_index, h_c.passage_1_end_index, h_c.passage_2_start_index, h_c.passage_2_end_index,
                         h_c.concept_id_1 as concept_1,
                         h_c.concept_id_2 as concept_2,
-                        GROUP_CONCAT(b.category_id) as categories
+                        b.category_id_1 as category_1,
+                        b.category_id_2 as category_2
                     FROM Haiku h 
                         INNER JOIN writes w ON w.haiku_id = h.id
                        
                         INNER JOIN Languages lang ON lang.id = h.language_id
                         INNER JOIN haiku_concepts h_c ON h_c.haiku_id = h.id 
                         INNER JOIN belongs b ON b.haiku_id = h.id
-                    
+                       
                         WHERE h.id=:id
                         GROUP BY h.id";
             

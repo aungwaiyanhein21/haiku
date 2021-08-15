@@ -127,7 +127,7 @@ export default function ConceptModal({ handleClose, open, setOpen, conceptData, 
         
        
         if (response.data.isSuccess) {
-            alert(response.data.message);
+            // alert(response.data.message);
         
             // reset the field
             setNewConceptData(initState);
@@ -137,7 +137,9 @@ export default function ConceptModal({ handleClose, open, setOpen, conceptData, 
 
             // get the connections between concept and category from the server as new connection has been added
             await getConceptCategoriesData();
-        
+
+            console.log('have data');
+
             // close the modal
             handleClose();
         }

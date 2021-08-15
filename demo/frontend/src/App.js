@@ -10,6 +10,7 @@ import AuthorForm from './components/Authors/AuthorForm';
 
 import Haiku from './components/Haiku/Haiku';
 import HaikuForm from './components/Haiku/HaikuForm';
+import Page404 from './components/Page404';
 
 function App() {
   return (
@@ -28,6 +29,9 @@ function App() {
         </Route>
         <Route exact path="/">
           <Home />
+        </Route>
+        <Route path="*">
+          <Page404 />
         </Route>
 
        

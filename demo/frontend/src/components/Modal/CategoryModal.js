@@ -75,7 +75,7 @@ export default function CategoryModal({handleClose, open, setOpen, getCategories
     console.log(response);
 
     if (response.data.isSuccess) {
-      alert(response.data.message);
+      // alert(response.data.message);
 
       // reset the field
       setCategoryName('');
