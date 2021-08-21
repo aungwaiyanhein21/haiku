@@ -74,6 +74,9 @@ For Haiku Demo
     <li>
         "npm start" (for development server for React)
     </li>
+    <li>
+        "npm run build" (for production)
+    </li>
 </ol>
 
 
